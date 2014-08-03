@@ -3,15 +3,11 @@ using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 
-namespace RolePlayingGameEngine
+namespace AudioBuddy
 {
 	/// <summary>
 	/// Component that manages audio playback for all cues.
 	/// </summary>
-	/// <remarks>
-	/// Similar to a class found in the Net Rumble starter kit on the 
-	/// XNA Creators Club Online website (http://creators.xna.com).
-	/// </remarks>
 	public class AudioManager : GameComponent
 	{
 		#region Singleton
