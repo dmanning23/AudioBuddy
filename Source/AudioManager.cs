@@ -1,4 +1,7 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using FilenameBuddy;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
@@ -55,6 +58,8 @@ namespace AudioBuddy
 				AudioEngine = new AudioEngine(settingsFile);
 				SoundBank = new SoundBank(AudioEngine, soundBankFile);
 				WaveBank = new WaveBank(AudioEngine, waveBankFile);
+				_startSong = false;
+				CurrentMusic = null;
 			}
 			catch (NoAudioHardwareException)
 			{
@@ -78,6 +83,7 @@ namespace AudioBuddy
 			if (game != null)
 			{
 				game.Components.Add(audioManager);
+				audioManager.MusicManager = new ContentManager(game.Services, "Content");
 			}
 		}
 
@@ -123,58 +129,70 @@ namespace AudioBuddy
 		#region Music
 
 		/// <summary>
-		/// The cue for the music currently playing, if any.
+		/// Flag for whether or not the music needs to be restarted
 		/// </summary>
-		private Cue musicCue;
+		private bool _startSong;
+
+		/// <summary>
+		/// The background music
+		/// </summary>
+		private Song CurrentMusic { get; set; }
+
+		/// <summary>
+		/// Separate content manager for loading music content.
+		/// </summary>
+		private ContentManager MusicManager { get; set; }
 
 		/// <summary>
 		/// Stack of music cue names, for layered music playback.
 		/// </summary>
-		private Stack<string> musicCueNameStack = new Stack<string>();
+		private Stack<Filename> _musicFileStack = new Stack<Filename>();
 
 		/// <summary>
 		/// Plays the desired music, clearing the stack of music cues.
 		/// </summary>
 		/// <param name="cueName">The name of the music cue to play.</param>
-		public static void PlayMusic(string cueName)
+		public static void PlayMusic(Filename musicFile)
 		{
 			// start the new music cue
 			if (audioManager != null)
 			{
-				audioManager.musicCueNameStack.Clear();
-				PushMusic(cueName);
+				audioManager._musicFileStack.Clear();
+				PushMusic(musicFile);
 			}
 		}
 
 		/// <summary>
 		/// Plays the music for this game, adding it to the music stack.
 		/// </summary>
-		/// <param name="cueName">The name of the music cue to play.</param>
-		public static void PushMusic(string cueName)
+		/// <param name="musicFile">The name of the music cue to play.</param>
+		public static void PushMusic(Filename musicFile)
 		{
 			// start the new music cue
-			if ((audioManager != null) && 
-				(audioManager.AudioEngine != null) &&
-				(audioManager.SoundBank != null) && 
-				(audioManager.WaveBank != null))
+			if (audioManager != null)
 			{
-				audioManager.musicCueNameStack.Push(cueName);
-				if ((audioManager.musicCue == null) ||
-					(audioManager.musicCue.Name != cueName))
-				{
-					if (audioManager.musicCue != null)
-					{
-						audioManager.musicCue.Stop(AudioStopOptions.AsAuthored);
-						audioManager.musicCue.Dispose();
-						audioManager.musicCue = null;
-					}
-					audioManager.musicCue = GetCue(cueName);
-					if (audioManager.musicCue != null)
-					{
-						audioManager.musicCue.Play();
-					}
-				}
+				//add to the queue
+				audioManager._musicFileStack.Push(musicFile);
+
+				audioManager.StartMusic(musicFile);
 			}
+		}
+
+		/// <summary>
+		/// Start playing a music file.
+		/// </summary>
+		/// <param name="musicFile"></param>
+		private void StartMusic(Filename musicFile)
+		{
+			//TODO: stop the old music?
+			//MeidaPlayer.Stop();
+			//CurrentMusic.Dispose();
+
+			//start the music
+			CurrentMusic = MusicManager.Load<Song>(musicFile.GetRelPathFileNoExt());
+			_startSong = true;
+			MediaPlayer.IsRepeating = true;
+			MediaPlayer.Volume = 1.0f;
 		}
 
 		/// <summary>
@@ -183,36 +201,16 @@ namespace AudioBuddy
 		public static void PopMusic()
 		{
 			// start the new music cue
-			if ((audioManager != null) && 
-				(audioManager.AudioEngine != null) &&
-				(audioManager.SoundBank != null) && 
-				(audioManager.WaveBank != null))
+			if (audioManager != null)
 			{
-				string cueName = null;
-				if (audioManager.musicCueNameStack.Count > 0)
+				//get the previous music file from the stack
+				if (audioManager._musicFileStack.Count > 0)
 				{
-					audioManager.musicCueNameStack.Pop();
-					if (audioManager.musicCueNameStack.Count > 0)
+					audioManager._musicFileStack.Pop();
+					if (audioManager._musicFileStack.Count > 0)
 					{
-						cueName = audioManager.musicCueNameStack.Peek();
-					}
-				}
-				if ((audioManager.musicCue == null) ||
-					(audioManager.musicCue.Name != cueName))
-				{
-					if (audioManager.musicCue != null)
-					{
-						audioManager.musicCue.Stop(AudioStopOptions.AsAuthored);
-						audioManager.musicCue.Dispose();
-						audioManager.musicCue = null;
-					}
-					if (!String.IsNullOrEmpty(cueName))
-					{
-						audioManager.musicCue = GetCue(cueName);
-						if (audioManager.musicCue != null)
-						{
-							audioManager.musicCue.Play();
-						}
+						//play the music?
+						audioManager.StartMusic(audioManager._musicFileStack.Peek());
 					}
 				}
 			}
@@ -225,13 +223,11 @@ namespace AudioBuddy
 		{
 			if (audioManager != null)
 			{
-				audioManager.musicCueNameStack.Clear();
-				if (audioManager.musicCue != null)
-				{
-					audioManager.musicCue.Stop(AudioStopOptions.AsAuthored);
-					audioManager.musicCue.Dispose();
-					audioManager.musicCue = null;
-				}
+				audioManager._musicFileStack.Clear();
+				MediaPlayer.Stop();
+				audioManager._startSong = false;
+				audioManager.CurrentMusic = null;
+				audioManager.MusicManager.Unload();
 			}
 		}
 
@@ -251,10 +247,12 @@ namespace AudioBuddy
 				AudioEngine.Update();
 			}
 
-			//if ((musicCue != null) && musicCue.IsStopped)
-			//{
-			//    AudioManager.PopMusic();
-			//}
+			//restart the music?
+			if (_startSong)
+			{
+				MediaPlayer.Play(CurrentMusic);
+				_startSong = false;
+			}
 
 			base.Update(gameTime);
 		}
@@ -275,17 +273,14 @@ namespace AudioBuddy
 					StopMusic();
 					if (SoundBank != null)
 					{
-						SoundBank.Dispose();
 						SoundBank = null;
 					}
 					if (WaveBank != null)
 					{
-						WaveBank.Dispose();
 						WaveBank = null;
 					}
 					if (AudioEngine != null)
 					{
-						AudioEngine.Dispose();
 						AudioEngine = null;
 					}
 				}
