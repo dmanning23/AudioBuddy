@@ -50,14 +50,18 @@ namespace AudioBuddy
 		/// <param name="settingsFile">The filename of the XACT settings file.</param>
 		/// <param name="waveBankFile">The filename of the XACT WaveBank file.</param>
 		/// <param name="soundBankFile">The filename of the XACT SoundBank file.</param>
-		private AudioManager(Game game, string settingsFile, string waveBankFile, string soundBankFile)
+		private AudioManager(Game game, 
+			string settingsFile,
+			string waveBankFile,
+			string soundBankFile)
 			: base(game)
 		{
 			try
 			{
-				AudioEngine = new AudioEngine(settingsFile);
-				SoundBank = new SoundBank(AudioEngine, soundBankFile);
-				WaveBank = new WaveBank(AudioEngine, waveBankFile);
+				AudioEngine = new AudioEngine("Content\\" + settingsFile);
+				SoundBank = new SoundBank(AudioEngine, "Content\\" + soundBankFile);
+				WaveBank = new WaveBank(AudioEngine, "Content\\" + waveBankFile);
+
 				_startSong = false;
 				CurrentMusic = null;
 			}
@@ -77,9 +81,15 @@ namespace AudioBuddy
 		/// <param name="settingsFile">The filename of the XACT settings file.</param>
 		/// <param name="waveBankFile">The filename of the XACT WaveBank file.</param>
 		/// <param name="soundBankFile">The filename of the XACT SoundBank file.</param>
-		public static void Initialize(Game game, string settingsFile, string waveBankFile, string soundBankFile)
+		public static void Initialize(Game game,
+			string settingsFile,
+			string waveBankFile,
+			string soundBankFile)
 		{
-			audioManager = new AudioManager(game, settingsFile, waveBankFile, soundBankFile);
+			audioManager = new AudioManager(game, 
+				settingsFile, 
+				waveBankFile, 
+				soundBankFile);
 			if (game != null)
 			{
 				game.Components.Add(audioManager);
