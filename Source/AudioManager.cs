@@ -146,7 +146,12 @@ namespace AudioBuddy
 		/// <summary>
 		/// The background music
 		/// </summary>
+#if WINDOWS
+		private SoundEffect CurrentMusic { get; set; }
+		private SoundEffectInstance _inst;
+#else
 		private Song CurrentMusic { get; set; }
+#endif
 
 		/// <summary>
 		/// Separate content manager for loading music content.
@@ -199,7 +204,11 @@ namespace AudioBuddy
 			//CurrentMusic.Dispose();
 
 			//start the music
+#if WINDOWS
+			CurrentMusic = MusicManager.Load<SoundEffect>(musicFile.GetRelPathFileNoExt());
+#else
 			CurrentMusic = MusicManager.Load<Song>(musicFile.GetRelPathFileNoExt());
+#endif
 			_startSong = true;
 			MediaPlayer.IsRepeating = true;
 			MediaPlayer.Volume = 1.0f;
@@ -234,7 +243,15 @@ namespace AudioBuddy
 			if (audioManager != null)
 			{
 				audioManager._musicFileStack.Clear();
+#if WINDOWS
+				if (null != audioManager._inst)
+				{
+					audioManager._inst.Stop();
+					audioManager._inst = null;
+				}
+#else
 				MediaPlayer.Stop();
+#endif
 				audioManager._startSong = false;
 				audioManager.CurrentMusic = null;
 				audioManager.MusicManager.Unload();
@@ -260,7 +277,16 @@ namespace AudioBuddy
 			//restart the music?
 			if (_startSong)
 			{
+#if WINDOWS
+				if (null != _inst)
+				{
+					_inst.Stop();
+				}
+				_inst = CurrentMusic.CreateInstance();
+				_inst.Play();
+#else
 				MediaPlayer.Play(CurrentMusic);
+#endif
 				_startSong = false;
 			}
 
