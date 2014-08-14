@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using System.Diagnostics;
 using Microsoft.Xna.Framework.Content;
 using FilenameBuddy;
 using Microsoft.Xna.Framework.Media;
@@ -25,19 +26,9 @@ namespace AudioBuddy
 		#region Audio Data
 
 		/// <summary>
-		/// The audio engine used to play all cues.
+		/// content manage rused to load soud effects
 		/// </summary>
-		private AudioEngine AudioEngine { get; set; }
-
-		/// <summary>
-		/// The SoundBank that contains all cues.
-		/// </summary>
-		private SoundBank SoundBank { get; set; }
-
-		/// <summary>
-		/// The WaveBank with all wave files for this game.
-		/// </summary>
-		private WaveBank WaveBank { get; set; }
+		private ContentManager _content;
 
 		#endregion //Audio Data
 
@@ -50,27 +41,18 @@ namespace AudioBuddy
 		/// <param name="settingsFile">The filename of the XACT settings file.</param>
 		/// <param name="waveBankFile">The filename of the XACT WaveBank file.</param>
 		/// <param name="soundBankFile">The filename of the XACT SoundBank file.</param>
-		private AudioManager(Game game, 
-			string settingsFile,
-			string waveBankFile,
-			string soundBankFile)
+		private AudioManager(Game game)
 			: base(game)
 		{
 			try
 			{
-				AudioEngine = new AudioEngine("Content\\" + settingsFile);
-				SoundBank = new SoundBank(AudioEngine, "Content\\" + soundBankFile);
-				WaveBank = new WaveBank(AudioEngine, "Content\\" + waveBankFile);
-
+				_content = game.Content;
 				_startSong = false;
 				CurrentMusic = null;
 			}
 			catch (NoAudioHardwareException)
 			{
-				// silently fall back to silence
-				AudioEngine = null;
-				WaveBank = null;
-				SoundBank = null;
+				_content = null;
 			}
 		}
 
@@ -81,15 +63,9 @@ namespace AudioBuddy
 		/// <param name="settingsFile">The filename of the XACT settings file.</param>
 		/// <param name="waveBankFile">The filename of the XACT WaveBank file.</param>
 		/// <param name="soundBankFile">The filename of the XACT SoundBank file.</param>
-		public static void Initialize(Game game,
-			string settingsFile,
-			string waveBankFile,
-			string soundBankFile)
+		public static void Initialize(Game game)
 		{
-			audioManager = new AudioManager(game, 
-				settingsFile, 
-				waveBankFile, 
-				soundBankFile);
+			audioManager = new AudioManager(game);
 			if (game != null)
 			{
 				game.Components.Add(audioManager);
@@ -106,32 +82,17 @@ namespace AudioBuddy
 		/// </summary>
 		/// <param name="cueName">The name of the cue requested.</param>
 		/// <returns>The cue corresponding to the name provided.</returns>
-		public static Cue GetCue(string cueName)
+		public static SoundEffect GetCue(Filename cueName)
 		{
-			if (String.IsNullOrEmpty(cueName) ||
+			Debug.Assert(null != cueName);
+
+			if (String.IsNullOrEmpty(cueName.ToString()) ||
 				(audioManager == null) ||
-				(audioManager.AudioEngine == null) ||
-				(audioManager.SoundBank == null) || 
-				(audioManager.WaveBank == null))
+				(audioManager._content == null))
 			{
 				return null;
 			}
-			return audioManager.SoundBank.GetCue(cueName);
-		}
-
-		/// <summary>
-		/// Plays a cue by name.
-		/// </summary>
-		/// <param name="cueName">The name of the cue to play.</param>
-		public static void PlayCue(string cueName)
-		{
-			if ((audioManager != null) &&
-				(audioManager.AudioEngine != null) &&
-				(audioManager.SoundBank != null) && 
-				(audioManager.WaveBank != null))
-			{
-				audioManager.SoundBank.PlayCue(cueName);
-			}
+			return audioManager._content.Load<SoundEffect>(cueName.GetRelPathFileNoExt());
 		}
 
 		#endregion //Cue Methods
@@ -268,12 +229,6 @@ namespace AudioBuddy
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		public override void Update(GameTime gameTime)
 		{
-			// update the audio engine
-			if (AudioEngine != null)
-			{
-				AudioEngine.Update();
-			}
-
 			//restart the music?
 			if (_startSong)
 			{
@@ -307,18 +262,8 @@ namespace AudioBuddy
 				if (disposing)
 				{
 					StopMusic();
-					if (SoundBank != null)
-					{
-						SoundBank = null;
-					}
-					if (WaveBank != null)
-					{
-						WaveBank = null;
-					}
-					if (AudioEngine != null)
-					{
-						AudioEngine = null;
-					}
+					CurrentMusic.Dispose();
+					CurrentMusic = null;
 				}
 			}
 			finally

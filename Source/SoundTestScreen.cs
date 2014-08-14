@@ -1,4 +1,5 @@
 ﻿using System;
+using AudioBuddy;
 using System.Text;
 using ResolutionBuddy;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using MenuBuddy;
 using FontBuddyLib;
 using AudioBuddy;
 using FilenameBuddy;
+using Microsoft.Xna.Framework.Audio;
 
 namespace AudioBuddy
 {
@@ -34,13 +36,15 @@ namespace AudioBuddy
 		/// list of all the music cue names
 		/// Add all your music cue name to this list
 		/// </summary>
-		public List<string> MusicCues { get; private set; }
+		public List<string> MusicNames { get; private set; }
 
 		/// <summary>
 		/// list of all the sounds fx cues
 		/// Add all your sound effect cues to this list
 		/// </summary>
-		public List<string> SoundFxCues { get; private set; }
+		private List<string> SoundEffectNames { get; set; }
+
+		private List<SoundEffect> SoundEffects { get; set; }
 
 		private MenuEntry MusicMenuEntry { get; set; }
 
@@ -60,8 +64,9 @@ namespace AudioBuddy
 			QuietMenu = true;
 
 			//set up the lists
-			MusicCues = new List<string>() { "None" };
-			SoundFxCues = new List<string>() { "None" };
+			MusicNames = new List<string>() { "None" };
+			SoundEffectNames = new List<string>() { "None" };
+			SoundEffects = new List<SoundEffect>();
 			_musicIndex = 0;
 			_soundIndex = 0;
 
@@ -84,6 +89,15 @@ namespace AudioBuddy
 			MenuEntries.Add(backMenuEntry);
 		}
 
+		public void InitSoudFx(Game game, List<Filename> soundfx)
+		{
+			foreach (var sound in soundfx)
+			{
+				SoundEffectNames.Add(sound.GetRelFilename());
+				SoundEffects.Add(AudioManager.GetCue(sound));
+			}
+		}
+
 		#region Music
 
 		/// <summary>
@@ -94,7 +108,7 @@ namespace AudioBuddy
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.Append("Music: ");
-			sb.Append(MusicCues[_musicIndex]);
+			sb.Append(MusicNames[_musicIndex]);
 			return sb.ToString();
 		}
 
@@ -107,7 +121,7 @@ namespace AudioBuddy
 		{
 			//increment the music to play
 			_musicIndex++;
-			if (_musicIndex >= MusicCues.Count)
+			if (_musicIndex >= MusicNames.Count)
 			{
 				_musicIndex = 0;
 			}
@@ -127,7 +141,7 @@ namespace AudioBuddy
 			_musicIndex--;
 			if (_musicIndex < 0)
 			{
-				_musicIndex = MusicCues.Count - 1;
+				_musicIndex = MusicNames.Count - 1;
 			}
 
 			//set the text of the menu option
@@ -147,7 +161,7 @@ namespace AudioBuddy
 			else
 			{
 				//play the selected song
-				AudioManager.PushMusic(new Filename(MusicCues[_musicIndex]));
+				AudioManager.PushMusic(new Filename(MusicNames[_musicIndex]));
 			}
 		}
 
@@ -163,7 +177,7 @@ namespace AudioBuddy
 		{
 			StringBuilder sb = new StringBuilder();
 			sb.Append("Sound: ");
-			sb.Append(SoundFxCues[_soundIndex]);
+			sb.Append(SoundEffectNames[_soundIndex]);
 			return sb.ToString();
 		}
 
@@ -176,7 +190,7 @@ namespace AudioBuddy
 		{
 			//increment the Sound to play
 			_soundIndex++;
-			if (_soundIndex >= SoundFxCues.Count)
+			if (_soundIndex >= SoundEffectNames.Count)
 			{
 				_soundIndex = 0;
 			}
@@ -199,7 +213,7 @@ namespace AudioBuddy
 			_soundIndex--;
 			if (_soundIndex < 0)
 			{
-				_soundIndex = SoundFxCues.Count - 1;
+				_soundIndex = SoundEffectNames.Count - 1;
 			}
 
 			//set the text of the menu option
@@ -217,7 +231,7 @@ namespace AudioBuddy
 			if (0 != _soundIndex)
 			{
 				//play the selected song
-				AudioManager.PlayCue(SoundFxCues[_soundIndex]);
+				SoundEffects[_soundIndex + 1].Play();
 			}
 		}
 
