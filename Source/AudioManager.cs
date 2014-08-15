@@ -114,6 +114,8 @@ namespace AudioBuddy
 		private Song CurrentMusic { get; set; }
 #endif
 
+		private Filename CurrentSongFile { get; set; }
+
 		/// <summary>
 		/// Separate content manager for loading music content.
 		/// </summary>
@@ -123,6 +125,22 @@ namespace AudioBuddy
 		/// Stack of music cue names, for layered music playback.
 		/// </summary>
 		private Stack<Filename> _musicFileStack = new Stack<Filename>();
+
+		/// <summary>
+		/// Get the name of the file currently being played
+		/// </summary>
+		/// <returns></returns>
+		public static string CurrentMusicFile()
+		{
+			if ((audioManager != null) && (null != audioManager.CurrentSongFile))
+			{
+				return audioManager.CurrentSongFile.GetFileNoExt();
+			}
+			else
+			{
+				return "None";
+			}
+		}
 
 		/// <summary>
 		/// Plays the desired music, clearing the stack of music cues.
@@ -149,7 +167,6 @@ namespace AudioBuddy
 			{
 				//add to the queue
 				audioManager._musicFileStack.Push(musicFile);
-
 				audioManager.StartMusic(musicFile);
 			}
 		}
@@ -173,6 +190,7 @@ namespace AudioBuddy
 			_startSong = true;
 			MediaPlayer.IsRepeating = true;
 			MediaPlayer.Volume = 1.0f;
+			CurrentSongFile = musicFile;
 		}
 
 		/// <summary>
@@ -180,18 +198,19 @@ namespace AudioBuddy
 		/// </summary>
 		public static void PopMusic()
 		{
-			// start the new music cue
-			if (audioManager != null)
+			//get the previous music file from the stack
+			if ((audioManager != null) && (audioManager._musicFileStack.Count > 0))
 			{
-				//get the previous music file from the stack
+				audioManager._musicFileStack.Pop();
 				if (audioManager._musicFileStack.Count > 0)
 				{
-					audioManager._musicFileStack.Pop();
-					if (audioManager._musicFileStack.Count > 0)
-					{
-						//play the music?
-						audioManager.StartMusic(audioManager._musicFileStack.Peek());
-					}
+					//play the music?
+					audioManager.StartMusic(audioManager._musicFileStack.Peek());
+				}
+				else
+				{
+					StopMusic();
+					audioManager.CurrentSongFile = null;
 				}
 			}
 		}
@@ -216,6 +235,7 @@ namespace AudioBuddy
 				audioManager._startSong = false;
 				audioManager.CurrentMusic = null;
 				audioManager.MusicManager.Unload();
+				audioManager.CurrentSongFile = null;
 			}
 		}
 
@@ -262,8 +282,11 @@ namespace AudioBuddy
 				if (disposing)
 				{
 					StopMusic();
-					CurrentMusic.Dispose();
-					CurrentMusic = null;
+					if (null != CurrentMusic)
+					{
+						CurrentMusic.Dispose();
+						CurrentMusic = null;
+					}
 				}
 			}
 			finally

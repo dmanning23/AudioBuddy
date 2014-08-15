@@ -62,6 +62,12 @@
     <Compile Include="..\Source\AudioManager.cs">
       <Link>AudioManager.cs</Link>
     </Compile>
+    <Compile Include="..\Source\MusicTestScreen.cs">
+      <Link>MusicTestScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\SoundFxTestScreen.cs">
+      <Link>SoundFxTestScreen.cs</Link>
+    </Compile>
     <Compile Include="..\Source\SoundTestScreen.cs">
       <Link>SoundTestScreen.cs</Link>
     </Compile>

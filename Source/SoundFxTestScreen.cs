@@ -16,27 +16,16 @@ using Microsoft.Xna.Framework.Audio;
 namespace AudioBuddy
 {
 	/// <summary>
-	/// This is a screen where you can do a music test.
+	/// This is a screen where you can do a sound fx test.
 	/// </summary>
-	public class SoundTestScreen : MenuScreen
+	public class SoundFxTestScreen : MenuScreen
 	{
 		#region Properties
-
-		/// <summary>
-		/// The index of the music to play
-		/// </summary>
-		private int _musicIndex;
 
 		/// <summary>
 		/// the index of the sound to play
 		/// </summary>
 		private int _soundIndex;
-
-		/// <summary>
-		/// list of all the music cue names
-		/// Add all your music cue name to this list
-		/// </summary>
-		private List<Filename> MusicNames { get; set; }
 
 		/// <summary>
 		/// list of all the sounds fx cues
@@ -46,16 +35,14 @@ namespace AudioBuddy
 
 		private List<SoundEffect> SoundEffects { get; set; }
 
-		private MenuEntry MusicMenuEntry { get; set; }
-
 		private MenuEntry SoundFxMenuEntry { get; set; }
 
 		#endregion //Properties
 
 		#region Methods
 
-		public SoundTestScreen()
-			: base("Sound Test")
+		public SoundFxTestScreen()
+			: base("Sound Fx Test")
 		{
 			//quiet please
 			AudioManager.StopMusic();
@@ -64,18 +51,9 @@ namespace AudioBuddy
 			QuietMenu = true;
 
 			//set up the lists
-			MusicNames = new List<Filename>();
 			SoundEffectNames = new List<string>() { "None" };
 			SoundEffects = new List<SoundEffect>();
-			_musicIndex = 0;
 			_soundIndex = 0;
-
-			//setup the music option
-			MusicMenuEntry = new MenuEntry(MusicText());
-			MusicMenuEntry.Left += PrevMusic;
-			MusicMenuEntry.Right += NextMusic;
-			MusicMenuEntry.Selected += PlayMusic;
-			MenuEntries.Add(MusicMenuEntry);
 
 			//Setup the sound fx option
 			SoundFxMenuEntry = new MenuEntry(SoundText());
@@ -90,15 +68,6 @@ namespace AudioBuddy
 		}
 
 		/// <summary>
-		/// Add all the music to this screen after it has been initialized.
-		/// </summary>
-		/// <param name="music"></param>
-		public void AddMusic(List<Filename> music)
-		{
-			MusicNames.AddRange(music);
-		}
-
-		/// <summary>
 		/// Add all the sound effect to this screen
 		/// </summary>
 		/// <param name="soundfx"></param>
@@ -110,79 +79,6 @@ namespace AudioBuddy
 				SoundEffects.Add(AudioManager.GetCue(sound));
 			}
 		}
-
-		#region Music
-
-		/// <summary>
-		/// get the text for the music menu option
-		/// </summary>
-		/// <returns></returns>
-		private string MusicText()
-		{
-			StringBuilder sb = new StringBuilder();
-			sb.Append("Music: ");
-			sb.Append(AudioManager.CurrentMusicFile());
-			return sb.ToString();
-		}
-
-		/// <summary>
-		/// Increment the music that is playing
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void NextMusic(object sender, EventArgs e)
-		{
-			//increment the music to play
-			_musicIndex++;
-			if (_musicIndex > MusicNames.Count)
-			{
-				_musicIndex = 0;
-			}
-			PlayMusic();
-		}
-
-		/// <summary>
-		/// decrement the music that is playing
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void PrevMusic(object sender, EventArgs e)
-		{
-			//decrement the music to play
-			_musicIndex--;
-			if (_musicIndex < 0)
-			{
-				_musicIndex = MusicNames.Count;
-			}
-			PlayMusic();
-		}
-
-		/// <summary>
-		/// Play (or stop) the music.
-		/// </summary>
-		private void PlayMusic(object sender, PlayerIndexEventArgs e)
-		{
-			PlayMusic();
-		}
-
-		private void PlayMusic()
-		{
-			if (0 == _musicIndex)
-			{
-				//check if trying to stop the music
-				AudioManager.StopMusic();
-			}
-			else
-			{
-				//play the selected song
-				AudioManager.PlayMusic(MusicNames[_musicIndex - 1]);
-			}
-
-			//set the text of the menu option
-			MusicMenuEntry.Text = MusicText();
-		}
-
-		#endregion //Music
 
 		#region Sound Fx
 
