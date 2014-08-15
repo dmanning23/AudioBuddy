@@ -107,7 +107,7 @@ namespace AudioBuddy
 			foreach (var sound in soundfx)
 			{
 				SoundEffectNames.Add(sound.GetFileNoExt());
-				SoundEffects.Add(AudioManager.GetCue(sound));
+				SoundEffects.Add(AudioManager.GetSoundEffect(sound));
 			}
 		}
 

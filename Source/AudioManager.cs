@@ -75,27 +75,27 @@ namespace AudioBuddy
 
 		#endregion //Initialization Methods
 
-		#region Cue Methods
+		#region Sound Effect Methods
 
 		/// <summary>
-		/// Retrieve a cue by name.
+		/// Retrieve a sound effect by name.
 		/// </summary>
-		/// <param name="cueName">The name of the cue requested.</param>
+		/// <param name="soundFxName">The name of the cue requested.</param>
 		/// <returns>The cue corresponding to the name provided.</returns>
-		public static SoundEffect GetCue(Filename cueName)
+		public static SoundEffect GetSoundEffect(Filename soundFxName)
 		{
-			Debug.Assert(null != cueName);
+			Debug.Assert(null != soundFxName);
 
-			if (String.IsNullOrEmpty(cueName.ToString()) ||
+			if (String.IsNullOrEmpty(soundFxName.ToString()) ||
 				(audioManager == null) ||
 				(audioManager._content == null))
 			{
 				return null;
 			}
-			return audioManager._content.Load<SoundEffect>(cueName.GetRelPathFileNoExt());
+			return audioManager._content.Load<SoundEffect>(soundFxName.GetRelPathFileNoExt());
 		}
 
-		#endregion //Cue Methods
+		#endregion //Sound Effect Methods
 
 		#region Music
 
