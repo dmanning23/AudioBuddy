@@ -1,17 +1,8 @@
-﻿using System;
-using AudioBuddy;
-using System.Text;
-using ResolutionBuddy;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using System.Diagnostics;
-using Microsoft.Xna.Framework.Graphics;
+﻿using FilenameBuddy;
 using MenuBuddy;
-using FontBuddyLib;
-using AudioBuddy;
-using FilenameBuddy;
-using Microsoft.Xna.Framework.Audio;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace AudioBuddy
 {
