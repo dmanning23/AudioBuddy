@@ -65,16 +65,24 @@ namespace AudioBuddy
 
 			//setup the music option
 			MusicMenuEntry = new MenuEntry(MusicText());
+#if ANDROID
+            MusicMenuEntry.Selected += NextMusic;
+#else
 			MusicMenuEntry.Left += PrevMusic;
 			MusicMenuEntry.Right += NextMusic;
 			MusicMenuEntry.Selected += PlayMusic;
-			MenuEntries.Add(MusicMenuEntry);
+#endif
+            MenuEntries.Add(MusicMenuEntry);
 
 			//Setup the sound fx option
 			SoundFxMenuEntry = new MenuEntry(SoundText());
+#if ANDROID
+            SoundFxMenuEntry.Selected += NextSound;
+#else
 			SoundFxMenuEntry.Left += PrevSound;
 			SoundFxMenuEntry.Right += NextSound;
 			SoundFxMenuEntry.Selected += PlaySound;
+#endif
 			MenuEntries.Add(SoundFxMenuEntry);
 
 			var backMenuEntry = new MenuEntry("Back");
