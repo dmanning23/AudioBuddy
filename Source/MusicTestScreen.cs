@@ -54,13 +54,23 @@ namespace AudioBuddy
 			PlayMenuEntry = new MenuEntry(PlayText());
 			PlayMenuEntry.Left += PrevPlayMusic;
 			PlayMenuEntry.Right += NextPlayMusic;
+#if ANDROID
+			PlayMenuEntry.Selected += NextPlayMusic;
 			PlayMenuEntry.Selected += PlayMusic;
+#else
+			PlayMenuEntry.Selected += PlayMusic;
+#endif
 			MenuEntries.Add(PlayMenuEntry);
 
 			PushMenuEntry = new MenuEntry(PushText());
 			PushMenuEntry.Left += PrevPushMusic;
 			PushMenuEntry.Right += NextPushMusic;
+#if ANDROID
+			PushMenuEntry.Selected += NextPushMusic;
 			PushMenuEntry.Selected += PushMusic;
+#else
+			PushMenuEntry.Selected += PushMusic;
+#endif
 			MenuEntries.Add(PushMenuEntry);
 
 			var popMusic = new MenuEntry("Pop Music");
