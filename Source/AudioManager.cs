@@ -146,13 +146,13 @@ namespace AudioBuddy
 		/// Plays the desired music, clearing the stack of music cues.
 		/// </summary>
 		/// <param name="cueName">The name of the music cue to play.</param>
-		public static void PlayMusic(Filename musicFile)
+		public static void PlayMusic(Filename musicFile, bool loop = true)
 		{
 			// start the new music cue
 			if (audioManager != null)
 			{
 				audioManager._musicFileStack.Clear();
-				PushMusic(musicFile);
+				PushMusic(musicFile, loop);
 			}
 		}
 
@@ -160,14 +160,14 @@ namespace AudioBuddy
 		/// Plays the music for this game, adding it to the music stack.
 		/// </summary>
 		/// <param name="musicFile">The name of the music cue to play.</param>
-		public static void PushMusic(Filename musicFile)
+		public static void PushMusic(Filename musicFile, bool loop = true)
 		{
 			// start the new music cue
 			if (audioManager != null)
 			{
 				//add to the queue
 				audioManager._musicFileStack.Push(musicFile);
-				audioManager.StartMusic(musicFile);
+				audioManager.StartMusic(musicFile, loop);
 			}
 		}
 
@@ -175,7 +175,7 @@ namespace AudioBuddy
 		/// Start playing a music file.
 		/// </summary>
 		/// <param name="musicFile"></param>
-		private void StartMusic(Filename musicFile)
+		private void StartMusic(Filename musicFile, bool loop)
 		{
 			//TODO: stop the old music?
 			//MeidaPlayer.Stop();
@@ -188,8 +188,8 @@ namespace AudioBuddy
 			CurrentMusic = MusicManager.Load<Song>(musicFile.GetRelPathFileNoExt());
 #endif
 			_startSong = true;
-			MediaPlayer.IsRepeating = true;
-			MediaPlayer.Volume = 1.0f;
+			MediaPlayer.IsRepeating = loop;
+			MediaPlayer.Volume = 0.7f;
 			CurrentSongFile = musicFile;
 		}
 
@@ -204,8 +204,8 @@ namespace AudioBuddy
 				audioManager._musicFileStack.Pop();
 				if (audioManager._musicFileStack.Count > 0)
 				{
-					//play the music?
-					audioManager.StartMusic(audioManager._musicFileStack.Peek());
+					//play the music (if popping off, want to loop the prev track)
+					audioManager.StartMusic(audioManager._musicFileStack.Peek(), true);
 				}
 				else
 				{
