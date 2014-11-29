@@ -1,3 +1,7 @@
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using FilenameBuddy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -6,6 +10,7 @@ using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using WMPLib;
 
 namespace AudioBuddy
 {
@@ -108,8 +113,7 @@ namespace AudioBuddy
 		/// The background music
 		/// </summary>
 #if WINDOWS
-		private SoundEffect CurrentMusic { get; set; }
-		private SoundEffectInstance _inst;
+		private WinmmWrapper CurrentMusic { get; set; }
 #else
 		private Song CurrentMusic { get; set; }
 #endif
@@ -177,13 +181,9 @@ namespace AudioBuddy
 		/// <param name="musicFile"></param>
 		private void StartMusic(Filename musicFile, bool loop)
 		{
-			//TODO: stop the old music?
-			//MeidaPlayer.Stop();
-			//CurrentMusic.Dispose();
-
-			//start the music
+			//load the music
 #if WINDOWS
-			CurrentMusic = MusicManager.Load<SoundEffect>(musicFile.GetRelPathFileNoExt());
+			CurrentMusic = new WinmmWrapper();
 #else
 			CurrentMusic = MusicManager.Load<Song>(musicFile.GetRelPathFileNoExt());
 #endif
@@ -224,10 +224,9 @@ namespace AudioBuddy
 			{
 				audioManager._musicFileStack.Clear();
 #if WINDOWS
-				if (null != audioManager._inst)
+				if (null != audioManager.CurrentMusic)
 				{
-					audioManager._inst.Stop();
-					audioManager._inst = null;
+					audioManager.CurrentMusic.Close();
 				}
 #else
 				MediaPlayer.Stop();
@@ -253,12 +252,9 @@ namespace AudioBuddy
 			if (_startSong)
 			{
 #if WINDOWS
-				if (null != _inst)
-				{
-					_inst.Stop();
-				}
-				_inst = CurrentMusic.CreateInstance();
-				_inst.Play();
+				CurrentMusic.Close();
+				CurrentMusic.Open(CurrentSongFile.File);
+				CurrentMusic.Play(true);
 #else
 				MediaPlayer.Play(CurrentMusic);
 #endif
@@ -282,11 +278,7 @@ namespace AudioBuddy
 				if (disposing)
 				{
 					StopMusic();
-					if (null != CurrentMusic)
-					{
-						CurrentMusic.Dispose();
-						CurrentMusic = null;
-					}
+					CurrentMusic = null;
 				}
 			}
 			finally
