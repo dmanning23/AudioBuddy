@@ -39,6 +39,11 @@ namespace AudioBuddy
 		{
 			//quiet please
 			AudioManager.StopMusic();
+
+			//set up the lists
+			SoundEffectNames = new List<string>() { "None" };
+			SoundEffects = new List<SoundEffect>();
+			_soundIndex = 0;
 		}
 
 		public override void LoadContent()
@@ -47,11 +52,6 @@ namespace AudioBuddy
 
 			var menuStyle = new StyleSheet(ScreenManager.Styles.MenuEntryStyle);
 			menuStyle.IsQuiet = true;
-
-			//set up the lists
-			SoundEffectNames = new List<string>() { "None" };
-			SoundEffects = new List<SoundEffect>();
-			_soundIndex = 0;
 
 			//Setup the sound fx option
 			SoundFxMenuEntry = new MenuEntry(menuStyle, SoundText());

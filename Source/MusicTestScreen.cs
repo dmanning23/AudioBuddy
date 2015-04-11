@@ -37,10 +37,15 @@ namespace AudioBuddy
 		#region Methods
 
 		public MusicTestScreen()
-			: base("")
+			: base("Music Test")
 		{
 			//quiet please
 			AudioManager.StopMusic();
+
+			//set up the lists
+			MusicNames = new List<Filename>();
+			_playMusicIndex = 0;
+			_pushMusicIndex = 0;
 		}
 
 		public override void LoadContent()
@@ -49,11 +54,6 @@ namespace AudioBuddy
 
 			var menuStyle = new StyleSheet(ScreenManager.Styles.MenuEntryStyle);
 			menuStyle.IsQuiet = true;
-
-			//set up the lists
-			MusicNames = new List<Filename>();
-			_playMusicIndex = 0;
-			_pushMusicIndex = 0;
 
 			//setup the music option
 			PlayMenuEntry = new MenuEntry(menuStyle, PlayText());
