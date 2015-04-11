@@ -39,9 +39,14 @@ namespace AudioBuddy
 		{
 			//quiet please
 			AudioManager.StopMusic();
+		}
 
-			//make sure this is a quiet menu.
-			QuietMenu = true;
+		public override void LoadContent()
+		{
+			base.LoadContent();
+
+			var menuStyle = new StyleSheet(ScreenManager.Styles.MenuEntryStyle);
+			menuStyle.IsQuiet = true;
 
 			//set up the lists
 			SoundEffectNames = new List<string>() { "None" };
@@ -49,7 +54,7 @@ namespace AudioBuddy
 			_soundIndex = 0;
 
 			//Setup the sound fx option
-			SoundFxMenuEntry = new MenuEntry(SoundText());
+			SoundFxMenuEntry = new MenuEntry(menuStyle, SoundText());
 #if ANDROID
             SoundFxMenuEntry.Selected += NextSound;
 #else
@@ -57,11 +62,11 @@ namespace AudioBuddy
 			SoundFxMenuEntry.Right += NextSound;
 			SoundFxMenuEntry.Selected += PlaySound;
 #endif
-			MenuEntries.Add(SoundFxMenuEntry);
+			AddMenuEntry(SoundFxMenuEntry);
 
-			var backMenuEntry = new MenuEntry("Back");
+			var backMenuEntry = new MenuEntry(menuStyle, "Back");
 			backMenuEntry.Selected += OnCancel;
-			MenuEntries.Add(backMenuEntry);
+			AddMenuEntry(backMenuEntry);
 		}
 
 		/// <summary>

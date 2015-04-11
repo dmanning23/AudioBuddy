@@ -41,9 +41,14 @@ namespace AudioBuddy
 		{
 			//quiet please
 			AudioManager.StopMusic();
+		}
 
-			//make sure this is a quiet menu.
-			QuietMenu = true;
+		public override void LoadContent()
+		{
+			base.LoadContent();
+
+			var menuStyle = new StyleSheet(ScreenManager.Styles.MenuEntryStyle);
+			menuStyle.IsQuiet = true;
 
 			//set up the lists
 			MusicNames = new List<Filename>();
@@ -51,7 +56,7 @@ namespace AudioBuddy
 			_pushMusicIndex = 0;
 
 			//setup the music option
-			PlayMenuEntry = new MenuEntry(PlayText());
+			PlayMenuEntry = new MenuEntry(menuStyle, PlayText());
 			PlayMenuEntry.Left += PrevPlayMusic;
 			PlayMenuEntry.Right += NextPlayMusic;
 #if ANDROID
@@ -60,9 +65,9 @@ namespace AudioBuddy
 #else
 			PlayMenuEntry.Selected += PlayMusic;
 #endif
-			MenuEntries.Add(PlayMenuEntry);
+			AddMenuEntry(PlayMenuEntry);
 
-			PushMenuEntry = new MenuEntry(PushText());
+			PushMenuEntry = new MenuEntry(menuStyle, PushText());
 			PushMenuEntry.Left += PrevPushMusic;
 			PushMenuEntry.Right += NextPushMusic;
 #if ANDROID
@@ -71,15 +76,15 @@ namespace AudioBuddy
 #else
 			PushMenuEntry.Selected += PushMusic;
 #endif
-			MenuEntries.Add(PushMenuEntry);
+			AddMenuEntry(PushMenuEntry);
 
-			var popMusic = new MenuEntry("Pop Music");
+			var popMusic = new MenuEntry(menuStyle, "Pop Music");
 			popMusic.Selected += PopMusic;
-			MenuEntries.Add(popMusic);
+			AddMenuEntry(popMusic);
 
-			var backMenuEntry = new MenuEntry("Back");
+			var backMenuEntry = new MenuEntry(menuStyle, "Back");
 			backMenuEntry.Selected += OnCancel;
-			MenuEntries.Add(backMenuEntry);
+			AddMenuEntry(backMenuEntry);
 
 			SetTitleText();
 		}
