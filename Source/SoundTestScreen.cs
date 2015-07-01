@@ -65,11 +65,9 @@ namespace AudioBuddy
 		{
 			base.LoadContent();
 
-			var menuStyle = new StyleSheet(ScreenManager.Styles.MenuEntryStyle);
-			menuStyle.IsQuiet = true;
-
 			//setup the music option
-			MusicMenuEntry = new MenuEntry(menuStyle, MusicText());
+			MusicMenuEntry = new MenuEntry(MusicText());
+			MusicMenuEntry.Style.IsQuiet = true;
 #if ANDROID
             MusicMenuEntry.Selected += NextMusic;
 #else
@@ -80,7 +78,8 @@ namespace AudioBuddy
 			AddMenuEntry(MusicMenuEntry);
 
 			//Setup the sound fx option
-			SoundFxMenuEntry = new MenuEntry(menuStyle, SoundText());
+			SoundFxMenuEntry = new MenuEntry(SoundText());
+			SoundFxMenuEntry.Style.IsQuiet = true;
 #if ANDROID
             SoundFxMenuEntry.Selected += NextSound;
 #else
@@ -90,7 +89,8 @@ namespace AudioBuddy
 #endif
 			AddMenuEntry(SoundFxMenuEntry);
 
-			var backMenuEntry = new MenuEntry(menuStyle, "Back");
+			var backMenuEntry = new MenuEntry("Back");
+			backMenuEntry.Style.IsQuiet = true;
 			backMenuEntry.Selected += OnCancel;
 			AddMenuEntry(backMenuEntry);
 		}

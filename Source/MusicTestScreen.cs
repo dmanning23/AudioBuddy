@@ -52,11 +52,9 @@ namespace AudioBuddy
 		{
 			base.LoadContent();
 
-			var menuStyle = new StyleSheet(ScreenManager.Styles.MenuEntryStyle);
-			menuStyle.IsQuiet = true;
-
 			//setup the music option
-			PlayMenuEntry = new MenuEntry(menuStyle, PlayText());
+			PlayMenuEntry = new MenuEntry(PlayText());
+			PlayMenuEntry.Style.IsQuiet = true;
 			PlayMenuEntry.Left += PrevPlayMusic;
 			PlayMenuEntry.Right += NextPlayMusic;
 #if ANDROID
@@ -67,7 +65,8 @@ namespace AudioBuddy
 #endif
 			AddMenuEntry(PlayMenuEntry);
 
-			PushMenuEntry = new MenuEntry(menuStyle, PushText());
+			PushMenuEntry = new MenuEntry(PushText());
+			PushMenuEntry.Style.IsQuiet = true;
 			PushMenuEntry.Left += PrevPushMusic;
 			PushMenuEntry.Right += NextPushMusic;
 #if ANDROID
@@ -78,11 +77,13 @@ namespace AudioBuddy
 #endif
 			AddMenuEntry(PushMenuEntry);
 
-			var popMusic = new MenuEntry(menuStyle, "Pop Music");
+			var popMusic = new MenuEntry("Pop Music");
+			popMusic.Style.IsQuiet = true;
 			popMusic.Selected += PopMusic;
 			AddMenuEntry(popMusic);
 
-			var backMenuEntry = new MenuEntry(menuStyle, "Back");
+			var backMenuEntry = new MenuEntry("Back");
+			backMenuEntry.Style.IsQuiet = true;
 			backMenuEntry.Selected += OnCancel;
 			AddMenuEntry(backMenuEntry);
 
