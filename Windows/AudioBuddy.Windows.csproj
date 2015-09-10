@@ -93,7 +93,6 @@
       <Link>SoundTestScreen.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WinmmWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Filename\Windows\Filename.Windows.csproj">
