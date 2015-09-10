@@ -12,20 +12,38 @@ namespace AudioBuddy
 		private bool isOpen;
 
 		[DllImport("winmm.dll")]
-		private static extern long mciSendString(string strCommand, StringBuilder strReturn, int iReturnLength, IntPtr hwndCallback);
+		private static extern long mciSendString(string strCommand, StringBuilder lpszReturnString, int iReturnLength, IntPtr hwndCallback);
+
+		[DllImport("winmm.dll")]
+		private static extern bool mciGetErrorString(long fdwError, StringBuilder lpszErrorText, int cchErrorText);
 
 		public void Close()
 		{
 			_command = "close MediaFile";
-			mciSendString(_command, null, 0, IntPtr.Zero);
-			isOpen = false;
+
+			var result = mciSendString(_command, null, 0, IntPtr.Zero);
+
+			if (0 == result)
+			{
+				isOpen = false;
+			}
 		}
 
 		public void Open(string sFileName)
 		{
 			_command = "open \"" + sFileName + "\" type mpegvideo alias MediaFile";
-			mciSendString(_command, null, 0, IntPtr.Zero);
-			isOpen = true;
+			var result = mciSendString(_command, null, 0, IntPtr.Zero);
+
+			if (0 == result)
+			{
+				isOpen = true;
+			}
+			else
+			{
+				var buffer = new StringBuilder(512);
+				bool returnValue = mciGetErrorString(result, buffer, buffer.Capacity);
+				throw new Exception(buffer.ToString());
+			}
 		}
 
 		public void Play(bool loop)
@@ -34,8 +52,10 @@ namespace AudioBuddy
 			{
 				_command = "play MediaFile";
 				if (loop)
+				{
 					_command += " REPEAT";
-				mciSendString(_command, null, 0, IntPtr.Zero);
+				}
+				var result = mciSendString(_command, null, 0, IntPtr.Zero);
 			}
 		}
 	}

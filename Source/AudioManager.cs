@@ -1,4 +1,5 @@
 using FilenameBuddy;
+using MenuBuddy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -243,20 +244,29 @@ namespace AudioBuddy
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		public override void Update(GameTime gameTime)
 		{
-			//restart the music?
-			if (_startSong)
+			try
 			{
+				//restart the music?
+				if (_startSong)
+				{
+					//set the flag first, in case the mediaplayer bombs
+					_startSong = false;
 #if WINDOWS
-				CurrentMusic.Close();
-				CurrentMusic.Open(CurrentSongFile.File);
-				CurrentMusic.Play(true);
+					CurrentMusic.Close();
+					CurrentMusic.Open(CurrentSongFile.File);
+					CurrentMusic.Play(true);
 #else
-				MediaPlayer.Play(CurrentMusic);
+					MediaPlayer.Play(CurrentMusic);
 #endif
-				_startSong = false;
-			}
+				}
 
-			base.Update(gameTime);
+				base.Update(gameTime);
+			}
+			catch (Exception ex)
+			{
+				var screenManager = Game.Services.GetService(typeof(IScreenManager)) as IScreenManager;
+				screenManager.ErrorScreen(ex);
+			}
 		}
 
 		#endregion //Updating Methods
