@@ -58,10 +58,10 @@ namespace AudioBuddy
 			PlayMenuEntry.Left += PrevPlayMusic;
 			PlayMenuEntry.Right += NextPlayMusic;
 #if ANDROID
-			PlayMenuEntry.Selected += NextPlayMusic;
-			PlayMenuEntry.Selected += PlayMusic;
+			PlayMenuEntry.OnSelect += NextPlayMusic;
+			PlayMenuEntry.OnSelect += PlayMusic;
 #else
-			PlayMenuEntry.Selected += PlayMusic;
+			PlayMenuEntry.OnSelect += PlayMusic;
 #endif
 			AddMenuEntry(PlayMenuEntry);
 
@@ -70,21 +70,21 @@ namespace AudioBuddy
 			PushMenuEntry.Left += PrevPushMusic;
 			PushMenuEntry.Right += NextPushMusic;
 #if ANDROID
-			PushMenuEntry.Selected += NextPushMusic;
-			PushMenuEntry.Selected += PushMusic;
+			PushMenuEntry.OnSelect += NextPushMusic;
+			PushMenuEntry.OnSelect += PushMusic;
 #else
-			PushMenuEntry.Selected += PushMusic;
+			PushMenuEntry.OnSelect += PushMusic;
 #endif
 			AddMenuEntry(PushMenuEntry);
 
 			var popMusic = new MenuEntry("Pop Music");
 			popMusic.Style.IsQuiet = true;
-			popMusic.Selected += PopMusic;
+			popMusic.OnSelect += PopMusic;
 			AddMenuEntry(popMusic);
 
 			var backMenuEntry = new MenuEntry("Back");
 			backMenuEntry.Style.IsQuiet = true;
-			backMenuEntry.Selected += OnCancel;
+			backMenuEntry.OnSelect += Cancelled;
 			AddMenuEntry(backMenuEntry);
 
 			SetTitleText();
@@ -128,7 +128,7 @@ namespace AudioBuddy
 			}
 		}
 
-		private void PopMusic(object sender, PlayerIndexEventArgs e)
+		private void PopMusic(object sender, SelectedEventArgs e)
 		{
 			AudioManager.PopMusic();
 			SetTitleText();
@@ -187,7 +187,7 @@ namespace AudioBuddy
 		/// <summary>
 		/// Play (or stop) the music.
 		/// </summary>
-		private void PlayMusic(object sender, PlayerIndexEventArgs e)
+		private void PlayMusic(object sender, SelectedEventArgs e)
 		{
 			if (0 == _playMusicIndex)
 			{
@@ -257,7 +257,7 @@ namespace AudioBuddy
 		/// <summary>
 		/// Play (or stop) the music.
 		/// </summary>
-		private void PushMusic(object sender, PlayerIndexEventArgs e)
+		private void PushMusic(object sender, SelectedEventArgs e)
 		{
 			if (0 == _pushMusicIndex)
 			{

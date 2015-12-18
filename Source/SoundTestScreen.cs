@@ -69,11 +69,11 @@ namespace AudioBuddy
 			MusicMenuEntry = new MenuEntry(MusicText());
 			MusicMenuEntry.Style.IsQuiet = true;
 #if ANDROID
-            MusicMenuEntry.Selected += NextMusic;
+            MusicMenuEntry.OnSelect += NextMusic;
 #else
 			MusicMenuEntry.Left += PrevMusic;
 			MusicMenuEntry.Right += NextMusic;
-			MusicMenuEntry.Selected += PlayMusic;
+			MusicMenuEntry.OnSelect += PlayMusic;
 #endif
 			AddMenuEntry(MusicMenuEntry);
 
@@ -81,17 +81,17 @@ namespace AudioBuddy
 			SoundFxMenuEntry = new MenuEntry(SoundText());
 			SoundFxMenuEntry.Style.IsQuiet = true;
 #if ANDROID
-            SoundFxMenuEntry.Selected += NextSound;
+            SoundFxMenuEntry.OnSelect += NextSound;
 #else
 			SoundFxMenuEntry.Left += PrevSound;
 			SoundFxMenuEntry.Right += NextSound;
-			SoundFxMenuEntry.Selected += PlaySound;
+			SoundFxMenuEntry.OnSelect += PlaySound;
 #endif
 			AddMenuEntry(SoundFxMenuEntry);
 
 			var backMenuEntry = new MenuEntry("Back");
 			backMenuEntry.Style.IsQuiet = true;
-			backMenuEntry.Selected += OnCancel;
+			backMenuEntry.OnSelect += Cancelled;
 			AddMenuEntry(backMenuEntry);
 		}
 
@@ -166,7 +166,7 @@ namespace AudioBuddy
 		/// <summary>
 		/// Play (or stop) the music.
 		/// </summary>
-		private void PlayMusic(object sender, PlayerIndexEventArgs e)
+		private void PlayMusic(object sender, SelectedEventArgs e)
 		{
 			PlayMusic();
 		}
@@ -222,7 +222,7 @@ namespace AudioBuddy
 			SoundFxMenuEntry.Text = SoundText();
 
 			//Play the sound fx
-			PlaySound(sender, new PlayerIndexEventArgs(PlayerIndex.One));
+			PlaySound(sender, new SelectedEventArgs(PlayerIndex.One));
 		}
 
 		/// <summary>
@@ -243,13 +243,13 @@ namespace AudioBuddy
 			SoundFxMenuEntry.Text = SoundText();
 
 			//Play the sound fx
-			PlaySound(sender, new PlayerIndexEventArgs(PlayerIndex.One));
+			PlaySound(sender, new SelectedEventArgs(PlayerIndex.One));
 		}
 
 		/// <summary>
 		/// Play (or stop) the Sound.
 		/// </summary>
-		private void PlaySound(object sender, PlayerIndexEventArgs e)
+		private void PlaySound(object sender, SelectedEventArgs e)
 		{
 			if (0 != _soundIndex)
 			{
