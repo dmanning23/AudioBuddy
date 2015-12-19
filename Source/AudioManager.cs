@@ -264,8 +264,8 @@ namespace AudioBuddy
 			}
 			catch (Exception ex)
 			{
-				var screenManager = Game.Services.GetService(typeof(IScreenManager)) as IScreenManager;
-				screenManager.ErrorScreen(ex);
+				//var screenManager = Game.Services.GetService(typeof(IScreenManager)) as IScreenManager;
+				//screenManager.ErrorScreen(ex);
 			}
 		}
 
