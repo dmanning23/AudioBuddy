@@ -1,4 +1,5 @@
 ﻿using FilenameBuddy;
+using InputHelper;
 using MenuBuddy;
 using System;
 using System.Collections.Generic;
@@ -53,38 +54,46 @@ namespace AudioBuddy
 			base.LoadContent();
 
 			//setup the music option
-			PlayMenuEntry = new MenuEntry(PlayText());
-			PlayMenuEntry.Style.IsQuiet = true;
+			PlayMenuEntry = new MenuEntry(PlayText())
+			{
+				IsQuiet = true
+			};
 			PlayMenuEntry.Left += PrevPlayMusic;
 			PlayMenuEntry.Right += NextPlayMusic;
-#if ANDROID
-			PlayMenuEntry.OnSelect += NextPlayMusic;
-			PlayMenuEntry.OnSelect += PlayMusic;
+#if ANDROID || __IOS__
+			PlayMenuEntry.OnClick += NextPlayMusic;
+			PlayMenuEntry.OnClick += PlayMusic;
 #else
-			PlayMenuEntry.OnSelect += PlayMusic;
+			PlayMenuEntry.OnClick += PlayMusic;
 #endif
 			AddMenuEntry(PlayMenuEntry);
 
-			PushMenuEntry = new MenuEntry(PushText());
-			PushMenuEntry.Style.IsQuiet = true;
+			PushMenuEntry = new MenuEntry(PushText())
+			{
+				IsQuiet = true
+			};
 			PushMenuEntry.Left += PrevPushMusic;
 			PushMenuEntry.Right += NextPushMusic;
-#if ANDROID
-			PushMenuEntry.OnSelect += NextPushMusic;
-			PushMenuEntry.OnSelect += PushMusic;
+#if ANDROID || __IOS__
+			PushMenuEntry.OnClick += NextPushMusic;
+			PushMenuEntry.OnClick += PushMusic;
 #else
-			PushMenuEntry.OnSelect += PushMusic;
+			PushMenuEntry.OnClick += PushMusic;
 #endif
 			AddMenuEntry(PushMenuEntry);
 
-			var popMusic = new MenuEntry("Pop Music");
-			popMusic.Style.IsQuiet = true;
-			popMusic.OnSelect += PopMusic;
+			var popMusic = new MenuEntry("Pop Music")
+			{
+				IsQuiet = true
+			};
+			popMusic.OnClick += PopMusic;
 			AddMenuEntry(popMusic);
 
-			var backMenuEntry = new MenuEntry("Back");
-			backMenuEntry.Style.IsQuiet = true;
-			backMenuEntry.OnSelect += Cancelled;
+			var backMenuEntry = new MenuEntry("Back")
+			{
+				IsQuiet = true
+			};
+			backMenuEntry.OnClick += Cancelled;
 			AddMenuEntry(backMenuEntry);
 
 			SetTitleText();
@@ -128,7 +137,7 @@ namespace AudioBuddy
 			}
 		}
 
-		private void PopMusic(object sender, SelectedEventArgs e)
+		private void PopMusic(object sender, ClickEventArgs e)
 		{
 			AudioManager.PopMusic();
 			SetTitleText();
@@ -187,7 +196,7 @@ namespace AudioBuddy
 		/// <summary>
 		/// Play (or stop) the music.
 		/// </summary>
-		private void PlayMusic(object sender, SelectedEventArgs e)
+		private void PlayMusic(object sender, ClickEventArgs e)
 		{
 			if (0 == _playMusicIndex)
 			{
@@ -257,7 +266,7 @@ namespace AudioBuddy
 		/// <summary>
 		/// Play (or stop) the music.
 		/// </summary>
-		private void PushMusic(object sender, SelectedEventArgs e)
+		private void PushMusic(object sender, ClickEventArgs e)
 		{
 			if (0 == _pushMusicIndex)
 			{

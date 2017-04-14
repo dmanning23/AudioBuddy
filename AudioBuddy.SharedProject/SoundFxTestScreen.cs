@@ -1,4 +1,5 @@
 ﻿using FilenameBuddy;
+using InputHelper;
 using MenuBuddy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -51,20 +52,24 @@ namespace AudioBuddy
 			base.LoadContent();
 
 			//Setup the sound fx option
-			SoundFxMenuEntry = new MenuEntry(SoundText());
-			SoundFxMenuEntry.Style.IsQuiet = true;
-#if ANDROID
-            SoundFxMenuEntry.OnSelect += NextSound;
+			SoundFxMenuEntry = new MenuEntry(SoundText())
+			{
+				IsQuiet = true
+			};
+#if ANDROID || __IOS__
+			SoundFxMenuEntry.OnClick += NextSound;
 #else
 			SoundFxMenuEntry.Left += PrevSound;
 			SoundFxMenuEntry.Right += NextSound;
-			SoundFxMenuEntry.OnSelect += PlaySound;
+			SoundFxMenuEntry.OnClick += PlaySound;
 #endif
 			AddMenuEntry(SoundFxMenuEntry);
 
-			var backMenuEntry = new MenuEntry("Back");
-			backMenuEntry.Style.IsQuiet = true;
-			backMenuEntry.OnSelect += Cancelled;
+			var backMenuEntry = new MenuEntry("Back")
+			{
+				IsQuiet = true
+			};
+			backMenuEntry.OnClick += Cancelled;
 			AddMenuEntry(backMenuEntry);
 		}
 
@@ -113,7 +118,7 @@ namespace AudioBuddy
 			SoundFxMenuEntry.Text = SoundText();
 
 			//Play the sound fx
-			PlaySound(sender, new SelectedEventArgs(PlayerIndex.One));
+			PlaySound(sender, new ClickEventArgs(SoundFxMenuEntry.Position.ToVector2(), MouseButton.Left, PlayerIndex.One));
 		}
 
 		/// <summary>
@@ -134,13 +139,13 @@ namespace AudioBuddy
 			SoundFxMenuEntry.Text = SoundText();
 
 			//Play the sound fx
-			PlaySound(sender, new SelectedEventArgs(PlayerIndex.One));
+			PlaySound(sender, new ClickEventArgs(SoundFxMenuEntry.Position.ToVector2(), MouseButton.Left, PlayerIndex.One));
 		}
 
 		/// <summary>
 		/// Play (or stop) the Sound.
 		/// </summary>
-		private void PlaySound(object sender, SelectedEventArgs e)
+		private void PlaySound(object sender, ClickEventArgs e)
 		{
 			if (0 != _soundIndex)
 			{
