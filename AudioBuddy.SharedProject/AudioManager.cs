@@ -1,11 +1,12 @@
 using FilenameBuddy;
+using MenuBuddy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using MusicPlayer = Microsoft.Xna.Framework.Media.MediaPlayer; //need this because of namespace clash on iOS
 
 namespace AudioBuddy
 {
@@ -84,8 +85,6 @@ namespace AudioBuddy
 		/// <returns>The cue corresponding to the name provided.</returns>
 		public static SoundEffect GetSoundEffect(Filename soundFxName)
 		{
-			Debug.Assert(null != soundFxName);
-
 			if (String.IsNullOrEmpty(soundFxName.ToString()) ||
 				(audioManager == null) ||
 				(audioManager._content == null))
@@ -107,11 +106,7 @@ namespace AudioBuddy
 		/// <summary>
 		/// The background music
 		/// </summary>
-#if WINDOWS
-		private WinmmWrapper CurrentMusic { get; set; }
-#else
 		private Song CurrentMusic { get; set; }
-#endif
 
 		private Filename CurrentSongFile { get; set; }
 
@@ -177,14 +172,11 @@ namespace AudioBuddy
 		private void StartMusic(Filename musicFile, bool loop)
 		{
 			//load the music
-#if WINDOWS
-			CurrentMusic = new WinmmWrapper();
-#else
 			CurrentMusic = MusicManager.Load<Song>(musicFile.GetRelPathFileNoExt());
-#endif
+
 			_startSong = true;
-			MediaPlayer.IsRepeating = loop;
-			MediaPlayer.Volume = 0.7f;
+			MusicPlayer.IsRepeating = loop;
+			MusicPlayer.Volume = 0.7f;
 			CurrentSongFile = musicFile;
 		}
 
@@ -218,14 +210,8 @@ namespace AudioBuddy
 			if (audioManager != null)
 			{
 				audioManager._musicFileStack.Clear();
-#if WINDOWS
-				if (null != audioManager.CurrentMusic)
-				{
-					audioManager.CurrentMusic.Close();
-				}
-#else
-				MediaPlayer.Stop();
-#endif
+
+				MusicPlayer.Stop();
 				audioManager._startSong = false;
 				audioManager.CurrentMusic = null;
 				audioManager.MusicManager.Unload();
@@ -250,21 +236,15 @@ namespace AudioBuddy
 				{
 					//set the flag first, in case the mediaplayer bombs
 					_startSong = false;
-#if WINDOWS
-					CurrentMusic.Close();
-					CurrentMusic.Open(CurrentSongFile.File);
-					CurrentMusic.Play(true);
-#else
-					MediaPlayer.Play(CurrentMusic);
-#endif
+					MusicPlayer.Play(CurrentMusic);
 				}
 
 				base.Update(gameTime);
 			}
 			catch (Exception ex)
 			{
-				//var screenManager = Game.Services.GetService(typeof(IScreenManager)) as IScreenManager;
-				//screenManager.ErrorScreen(ex);
+				var screenManager = Game.Services.GetService(typeof(IScreenManager)) as IScreenManager;
+				screenManager.ErrorScreen(ex);
 			}
 		}
 
