@@ -54,7 +54,7 @@ namespace AudioBuddy
 			base.LoadContent();
 
 			//setup the music option
-			PlayMenuEntry = new MenuEntry(PlayText())
+			PlayMenuEntry = new MenuEntry(PlayText(), Content)
 			{
 				IsQuiet = true
 			};
@@ -68,7 +68,7 @@ namespace AudioBuddy
 #endif
 			AddMenuEntry(PlayMenuEntry);
 
-			PushMenuEntry = new MenuEntry(PushText())
+			PushMenuEntry = new MenuEntry(PushText(), Content)
 			{
 				IsQuiet = true
 			};
@@ -82,14 +82,14 @@ namespace AudioBuddy
 #endif
 			AddMenuEntry(PushMenuEntry);
 
-			var popMusic = new MenuEntry("Pop Music")
+			var popMusic = new MenuEntry("Pop Music", Content)
 			{
 				IsQuiet = true
 			};
 			popMusic.OnClick += PopMusic;
 			AddMenuEntry(popMusic);
 
-			var backMenuEntry = new MenuEntry("Back")
+			var backMenuEntry = new MenuEntry("Back", Content)
 			{
 				IsQuiet = true
 			};

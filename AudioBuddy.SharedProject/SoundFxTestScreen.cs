@@ -52,7 +52,7 @@ namespace AudioBuddy
 			base.LoadContent();
 
 			//Setup the sound fx option
-			SoundFxMenuEntry = new MenuEntry(SoundText())
+			SoundFxMenuEntry = new MenuEntry(SoundText(), Content)
 			{
 				IsQuiet = true
 			};
@@ -65,7 +65,7 @@ namespace AudioBuddy
 #endif
 			AddMenuEntry(SoundFxMenuEntry);
 
-			var backMenuEntry = new MenuEntry("Back")
+			var backMenuEntry = new MenuEntry("Back", Content)
 			{
 				IsQuiet = true
 			};

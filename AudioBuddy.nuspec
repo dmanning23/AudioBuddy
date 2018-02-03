@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>AudioBuddy</id>
-		<version>1.0.3</version>
+		<version>1.0.5</version>
 		<title>AudioBuddy</title>
 		<authors>dmanning23</authors>
 		<owners>dmanning23</owners>
@@ -77,7 +77,7 @@
 			</group>
 
 			<group targetFramework="net451">
-				<dependency id="MonoGame.Framework.DesktopGL" version="3.5"/>
+				<dependency id="MonoGame.Framework.WindowsDX" version="3.5"/>
 				<dependency id="FilenameBuddy" version="1.0.1"/>
 				<dependency id="InputHelper" version="1.0.1"/>
 				<dependency id="StateMachineBuddy" version="1.0"/>
@@ -111,9 +111,9 @@
 		<file src="AudioBuddy.WindowsUniversal\bin\Release\AudioBuddy.WindowsUniversal.pdb" target="lib\uap10.0\AudioBuddy.WindowsUniversal.pdb" />
 		<file src="AudioBuddy.WindowsUniversal\bin\Release\AudioBuddy.WindowsUniversal.dll" target="lib\uap10.0\AudioBuddy.WindowsUniversal.dll" />
 
-		<!--DesktopGL-->
-		<file src="AudioBuddy.DesktopGL\bin\Release\AudioBuddy.DesktopGL.pdb" target="lib\net451\AudioBuddy.DesktopGL.pdb" />
-		<file src="AudioBuddy.DesktopGL\bin\Release\AudioBuddy.DesktopGL.dll" target="lib\net451\AudioBuddy.DesktopGL.dll" />
+		<!--WindowsDX-->
+		<file src="AudioBuddy.WindowsDX\bin\Release\AudioBuddy.WindowsDX.pdb" target="lib\net451\AudioBuddy.WindowsDX.pdb" />
+		<file src="AudioBuddy.WindowsDX\bin\Release\AudioBuddy.WindowsDX.dll" target="lib\net451\AudioBuddy.WindowsDX.dll" />
 
 	</files>
 </package>
