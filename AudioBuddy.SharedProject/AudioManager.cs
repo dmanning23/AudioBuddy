@@ -66,17 +66,22 @@ namespace AudioBuddy
 		/// <param name="soundBankFile">The filename of the XACT SoundBank file.</param>
 		public static void Initialize(Game game)
 		{
+#if !DESKTOP
 			audioManager = new AudioManager(game);
+#endif
 			if (game != null)
 			{
 				game.Components.Add(audioManager);
-				audioManager.MusicManager = new ContentManager(game.Services, "Content");
+				if (null != audioManager)
+				{
+					audioManager.MusicManager = new ContentManager(game.Services, "Content");
+				}
 			}
 		}
 
-		#endregion //Initialization Methods
+#endregion //Initialization Methods
 
-		#region Sound Effect Methods
+#region Sound Effect Methods
 
 		/// <summary>
 		/// Retrieve a sound effect by name.
@@ -94,9 +99,9 @@ namespace AudioBuddy
 			return audioManager._content.Load<SoundEffect>(soundFxName.GetRelPathFileNoExt());
 		}
 
-		#endregion //Sound Effect Methods
+#endregion //Sound Effect Methods
 
-		#region Music
+#region Music
 
 		/// <summary>
 		/// Flag for whether or not the music needs to be restarted
@@ -210,7 +215,7 @@ namespace AudioBuddy
 			if (audioManager != null)
 			{
 				audioManager._musicFileStack.Clear();
-
+				var state = MusicPlayer.State;
 				MusicPlayer.Stop();
 				audioManager._startSong = false;
 				audioManager.CurrentMusic = null;
@@ -219,9 +224,9 @@ namespace AudioBuddy
 			}
 		}
 
-		#endregion //Music
+#endregion //Music
 
-		#region Updating Methods
+#region Updating Methods
 
 		/// <summary>
 		/// Update the audio manager, particularly the engine.
@@ -248,9 +253,9 @@ namespace AudioBuddy
 			}
 		}
 
-		#endregion //Updating Methods
+#endregion //Updating Methods
 
-		#region Instance Disposal Methods
+#region Instance Disposal Methods
 
 		/// <summary>
 		/// Clean up the component when it is disposing.
@@ -271,6 +276,6 @@ namespace AudioBuddy
 			}
 		}
 
-		#endregion //Instance Disposal Methods
+#endregion //Instance Disposal Methods
 	}
 }
