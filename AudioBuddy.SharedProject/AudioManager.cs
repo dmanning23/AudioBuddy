@@ -1,4 +1,5 @@
 using FilenameBuddy;
+using GameTimer;
 using MenuBuddy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -50,6 +51,8 @@ namespace AudioBuddy
 				_content = game.Content;
 				_startSong = false;
 				CurrentMusic = null;
+				FadeTimer = new CountdownTimer();
+				FadeTimer.Stop();
 			}
 			catch (NoAudioHardwareException)
 			{
@@ -79,9 +82,9 @@ namespace AudioBuddy
 			}
 		}
 
-#endregion //Initialization Methods
+		#endregion //Initialization Methods
 
-#region Sound Effect Methods
+		#region Sound Effect Methods
 
 		/// <summary>
 		/// Retrieve a sound effect by name.
@@ -99,9 +102,11 @@ namespace AudioBuddy
 			return audioManager._content.Load<SoundEffect>(soundFxName.GetRelPathFileNoExt());
 		}
 
-#endregion //Sound Effect Methods
+		#endregion //Sound Effect Methods
 
-#region Music
+		#region Music
+
+		const float MaxVolume = 0.7f;
 
 		/// <summary>
 		/// Flag for whether or not the music needs to be restarted
@@ -126,6 +131,13 @@ namespace AudioBuddy
 		private Stack<Filename> _musicFileStack = new Stack<Filename>();
 
 		/// <summary>
+		/// Timer used to fade the music out
+		/// </summary>
+		private CountdownTimer FadeTimer { get; set; }
+
+		private float FadeTime { get; set; }
+
+		/// <summary>
 		/// Get the name of the file currently being played
 		/// </summary>
 		/// <returns></returns>
@@ -145,13 +157,13 @@ namespace AudioBuddy
 		/// Plays the desired music, clearing the stack of music cues.
 		/// </summary>
 		/// <param name="cueName">The name of the music cue to play.</param>
-		public static void PlayMusic(Filename musicFile, bool loop = true)
+		public static void PlayMusic(Filename musicFile, bool loop = true, float volume = 1f)
 		{
 			// start the new music cue
 			if (audioManager != null)
 			{
 				audioManager._musicFileStack.Clear();
-				PushMusic(musicFile, loop);
+				PushMusic(musicFile, loop, volume);
 			}
 		}
 
@@ -159,14 +171,14 @@ namespace AudioBuddy
 		/// Plays the music for this game, adding it to the music stack.
 		/// </summary>
 		/// <param name="musicFile">The name of the music cue to play.</param>
-		public static void PushMusic(Filename musicFile, bool loop = true)
+		public static void PushMusic(Filename musicFile, bool loop = true, float volume = 1f)
 		{
 			// start the new music cue
 			if (audioManager != null)
 			{
 				//add to the queue
 				audioManager._musicFileStack.Push(musicFile);
-				audioManager.StartMusic(musicFile, loop);
+				audioManager.StartMusic(musicFile, loop, volume);
 			}
 		}
 
@@ -174,21 +186,23 @@ namespace AudioBuddy
 		/// Start playing a music file.
 		/// </summary>
 		/// <param name="musicFile"></param>
-		private void StartMusic(Filename musicFile, bool loop)
+		private void StartMusic(Filename musicFile, bool loop, float volume)
 		{
+			FadeTimer.Stop();
+
 			//load the music
 			CurrentMusic = MusicManager.Load<Song>(musicFile.GetRelPathFileNoExt());
 
 			_startSong = true;
 			MusicPlayer.IsRepeating = loop;
-			MusicPlayer.Volume = 0.7f;
+			MusicPlayer.Volume = volume * MaxVolume;
 			CurrentSongFile = musicFile;
 		}
 
 		/// <summary>
 		/// Stops the current music and plays the previous music on the stack.
 		/// </summary>
-		public static void PopMusic()
+		public static void PopMusic(float volume = 1f)
 		{
 			//get the previous music file from the stack
 			if ((audioManager != null) && (audioManager._musicFileStack.Count > 0))
@@ -197,7 +211,7 @@ namespace AudioBuddy
 				if (audioManager._musicFileStack.Count > 0)
 				{
 					//play the music (if popping off, want to loop the prev track)
-					audioManager.StartMusic(audioManager._musicFileStack.Peek(), true);
+					audioManager.StartMusic(audioManager._musicFileStack.Peek(), true, volume);
 				}
 				else
 				{
@@ -224,9 +238,36 @@ namespace AudioBuddy
 			}
 		}
 
-#endregion //Music
+		public static void FadeMusic(float fadeTime)
+		{
+			if (audioManager != null)
+			{
+				if (0f < fadeTime)
+				{
+					audioManager.FadeTime = fadeTime;
+					audioManager.FadeTimer.Start(fadeTime);
+				}
+			}
+		}
 
-#region Updating Methods
+		public static void Pause(bool pauseUnpause)
+		{
+			if (audioManager != null)
+			{
+				if (pauseUnpause)
+				{
+					MusicPlayer.Stop();
+				}
+				else
+				{
+					audioManager._startSong = true;
+				}
+			}
+		}
+
+		#endregion //Music
+
+		#region Updating Methods
 
 		/// <summary>
 		/// Update the audio manager, particularly the engine.
@@ -236,12 +277,24 @@ namespace AudioBuddy
 		{
 			try
 			{
+				FadeTimer.Update(gameTime);
+
 				//restart the music?
 				if (_startSong)
 				{
 					//set the flag first, in case the mediaplayer bombs
 					_startSong = false;
 					MusicPlayer.Play(CurrentMusic);
+				}
+
+				if (!FadeTimer.Paused && FadeTimer.HasTimeRemaining)
+				{
+					MusicPlayer.Volume = MusicPlayer.Volume - (FadeTimer.TimeDelta * (1f / FadeTime));
+				}
+				else if (!FadeTimer.Paused && !FadeTimer.HasTimeRemaining)
+				{
+					FadeTimer.Stop();
+					StopMusic();
 				}
 
 				base.Update(gameTime);
@@ -253,9 +306,9 @@ namespace AudioBuddy
 			}
 		}
 
-#endregion //Updating Methods
+		#endregion //Updating Methods
 
-#region Instance Disposal Methods
+		#region Instance Disposal Methods
 
 		/// <summary>
 		/// Clean up the component when it is disposing.
@@ -276,6 +329,6 @@ namespace AudioBuddy
 			}
 		}
 
-#endregion //Instance Disposal Methods
+		#endregion //Instance Disposal Methods
 	}
 }
