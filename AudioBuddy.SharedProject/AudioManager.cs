@@ -154,6 +154,23 @@ namespace AudioBuddy
 		}
 
 		/// <summary>
+		/// Check if a specified music file is currently being played
+		/// </summary>
+		/// <param name="musicFile"></param>
+		/// <returns></returns>
+		public static bool IsCurrentMusicFile(Filename musicFile)
+		{
+			if ((audioManager != null) && (null != audioManager.CurrentSongFile))
+			{
+				return audioManager.CurrentSongFile.File == musicFile.File;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Plays the desired music, clearing the stack of music cues.
 		/// </summary>
 		/// <param name="cueName">The name of the music cue to play.</param>
