@@ -4,6 +4,7 @@ using MenuBuddy;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AudioBuddy
 {
@@ -49,9 +50,9 @@ namespace AudioBuddy
 			_pushMusicIndex = 0;
 		}
 
-		public override void LoadContent()
+		public override async Task LoadContent()
 		{
-			base.LoadContent();
+			await base.LoadContent();
 
 			//setup the music option
 			PlayMenuEntry = new MenuEntry(PlayText(), Content)

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AudioBuddy
 {
@@ -47,9 +48,9 @@ namespace AudioBuddy
 			_soundIndex = 0;
 		}
 
-		public override void LoadContent()
+		public override async Task LoadContent()
 		{
-			base.LoadContent();
+			await base.LoadContent();
 
 			//Setup the sound fx option
 			SoundFxMenuEntry = new MenuEntry(SoundText(), Content)
