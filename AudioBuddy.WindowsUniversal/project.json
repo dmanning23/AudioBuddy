@@ -1,12 +1,12 @@
 ﻿{
   "dependencies": {
-    "FilenameBuddy": "2.0.5",
-    "FontBuddy": "2.0.5",
+    "FilenameBuddy": "2.0.8",
+    "FontBuddy": "2.0.6",
     "GameTimer": "2.0.0",
     "HadoukInput": "2.0.21",
     "InputHelper": "2.0.6",
     "MatrixExtensions": "2.0.0",
-    "MenuBuddy": "2.0.43",
+    "MenuBuddy": "2.0.46",
     "Microsoft.NETCore.UniversalWindowsPlatform": "6.2.8",
     "MonoGame.Framework.WindowsUniversal": "3.7.1.189",
     "MouseBuddy": "2.0.2",
