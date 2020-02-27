@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioBuddy.Android", "AudioBuddy.Android\AudioBuddy.Android.csproj", "{F49BF87C-CAFD-4EC8-A1E5-ACF2CB474099}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioBuddy.iOS", "AudioBuddy.iOS\AudioBuddy.iOS.csproj", "{E4449DF5-B468-497D-8DCB-24FA3AB5D8C4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioBuddy.WindowsUniversal", "AudioBuddy.WindowsUniversal\AudioBuddy.WindowsUniversal.csproj", "{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AudioBuddy.SharedProject", "AudioBuddy.SharedProject\AudioBuddy.SharedProject.shproj", "{5231EFA6-BEF9-4E7B-99F9-085C7225A68A}"
 EndProject
@@ -21,7 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioBuddy.WindowsDX", "Aud
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		AudioBuddy.SharedProject\AudioBuddy.SharedProject.projitems*{47aa9bad-9e2e-4c3a-8b50-fa04496aee0c}*SharedItemsImports = 4
 		AudioBuddy.SharedProject\AudioBuddy.SharedProject.projitems*{5231efa6-bef9-4e7b-99f9-085c7225a68a}*SharedItemsImports = 13
 		AudioBuddy.SharedProject\AudioBuddy.SharedProject.projitems*{898417df-822e-459a-80c6-c33ba1eb4be3}*SharedItemsImports = 4
 		AudioBuddy.SharedProject\AudioBuddy.SharedProject.projitems*{e4449df5-b468-497d-8dcb-24fa3ab5d8c4}*SharedItemsImports = 4
@@ -70,22 +67,6 @@ Global
 		{E4449DF5-B468-497D-8DCB-24FA3AB5D8C4}.Release|x64.Build.0 = Release|Any CPU
 		{E4449DF5-B468-497D-8DCB-24FA3AB5D8C4}.Release|x86.ActiveCfg = Release|Any CPU
 		{E4449DF5-B468-497D-8DCB-24FA3AB5D8C4}.Release|x86.Build.0 = Release|Any CPU
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Debug|ARM.ActiveCfg = Debug|ARM
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Debug|ARM.Build.0 = Debug|ARM
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Debug|x64.ActiveCfg = Debug|x64
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Debug|x64.Build.0 = Debug|x64
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Debug|x86.ActiveCfg = Debug|x86
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Debug|x86.Build.0 = Debug|x86
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Release|ARM.ActiveCfg = Release|ARM
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Release|ARM.Build.0 = Release|ARM
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Release|x64.ActiveCfg = Release|x64
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Release|x64.Build.0 = Release|x64
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Release|x86.ActiveCfg = Release|x86
-		{47AA9BAD-9E2E-4C3A-8B50-FA04496AEE0C}.Release|x86.Build.0 = Release|x86
 		{898417DF-822E-459A-80C6-C33BA1EB4BE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{898417DF-822E-459A-80C6-C33BA1EB4BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{898417DF-822E-459A-80C6-C33BA1EB4BE3}.Debug|ARM.ActiveCfg = Debug|Any CPU

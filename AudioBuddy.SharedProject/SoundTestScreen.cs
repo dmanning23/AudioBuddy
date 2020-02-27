@@ -230,7 +230,7 @@ namespace AudioBuddy
 			SoundFxMenuEntry.Text = SoundText();
 
 			//Play the sound fx
-			PlaySound(sender, new ClickEventArgs(SoundFxMenuEntry.Position.ToVector2(), MouseButton.Left, PlayerIndex.One));
+			PlaySound(sender, new ClickEventArgs(SoundFxMenuEntry.Position.ToVector2(), MouseButton.Left, null));
 		}
 
 		/// <summary>
@@ -251,7 +251,7 @@ namespace AudioBuddy
 			SoundFxMenuEntry.Text = SoundText();
 
 			//Play the sound fx
-			PlaySound(sender, new ClickEventArgs(SoundFxMenuEntry.Position.ToVector2(), MouseButton.Left, PlayerIndex.One));
+			PlaySound(sender, new ClickEventArgs(SoundFxMenuEntry.Position.ToVector2(), MouseButton.Left, null));
 		}
 
 		/// <summary>
