@@ -61,12 +61,10 @@ namespace AudioBuddy
 			};
 			PlayMenuEntry.Left += PrevPlayMusic;
 			PlayMenuEntry.Right += NextPlayMusic;
-#if ANDROID || __IOS__
+
 			PlayMenuEntry.OnClick += NextPlayMusic;
 			PlayMenuEntry.OnClick += PlayMusic;
-#else
-			PlayMenuEntry.OnClick += PlayMusic;
-#endif
+
 			AddMenuEntry(PlayMenuEntry);
 
 			PushMenuEntry = new MenuEntry(PushText(), Content)
@@ -75,12 +73,10 @@ namespace AudioBuddy
 			};
 			PushMenuEntry.Left += PrevPushMusic;
 			PushMenuEntry.Right += NextPushMusic;
-#if ANDROID || __IOS__
+
 			PushMenuEntry.OnClick += NextPushMusic;
 			PushMenuEntry.OnClick += PushMusic;
-#else
-			PushMenuEntry.OnClick += PushMusic;
-#endif
+
 			AddMenuEntry(PushMenuEntry);
 
 			var popMusic = new MenuEntry("Pop Music", Content)

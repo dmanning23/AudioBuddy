@@ -72,13 +72,9 @@ namespace AudioBuddy
 			{
 				IsQuiet = true
 			};
-#if ANDROID || __IOS__
+
 			MusicMenuEntry.OnClick += NextMusic;
-#else
-			MusicMenuEntry.Left += PrevMusic;
-			MusicMenuEntry.Right += NextMusic;
-			MusicMenuEntry.OnClick += PlayMusic;
-#endif
+
 			AddMenuEntry(MusicMenuEntry);
 
 			//Setup the sound fx option
@@ -86,13 +82,9 @@ namespace AudioBuddy
 			{
 				IsQuiet = true
 			};
-#if ANDROID || __IOS__
+
 			SoundFxMenuEntry.OnClick += NextSound;
-#else
-			SoundFxMenuEntry.Left += PrevSound;
-			SoundFxMenuEntry.Right += NextSound;
-			SoundFxMenuEntry.OnClick += PlaySound;
-#endif
+
 			AddMenuEntry(SoundFxMenuEntry);
 
 			var backMenuEntry = new MenuEntry("Back", Content)

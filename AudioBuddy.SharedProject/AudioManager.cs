@@ -69,9 +69,7 @@ namespace AudioBuddy
 		/// <param name="soundBankFile">The filename of the XACT SoundBank file.</param>
 		public static void Initialize(Game game)
 		{
-#if !DESKTOP
 			audioManager = new AudioManager(game);
-#endif
 			if (game != null)
 			{
 				game.Components.Add(audioManager);

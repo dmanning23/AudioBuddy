@@ -57,13 +57,9 @@ namespace AudioBuddy
 			{
 				IsQuiet = true
 			};
-#if ANDROID || __IOS__
+
 			SoundFxMenuEntry.OnClick += NextSound;
-#else
-			SoundFxMenuEntry.Left += PrevSound;
-			SoundFxMenuEntry.Right += NextSound;
-			SoundFxMenuEntry.OnClick += PlaySound;
-#endif
+
 			AddMenuEntry(SoundFxMenuEntry);
 
 			var backMenuEntry = new MenuEntry("Back", Content)
