@@ -16,21 +16,47 @@ namespace AudioBuddy
 	/// </summary>
 	public class AudioManager : GameComponent
 	{
-		#region Singleton
+		#region Properties
 
 		/// <summary>
 		/// The singleton for this type.
 		/// </summary>
 		private static AudioManager audioManager = null;
 
-		#endregion //Singleton
-
-		#region Audio Data
-
 		/// <summary>
 		/// content manage rused to load soud effects
 		/// </summary>
 		private ContentManager _content;
+
+		#region Music
+
+		const float MaxVolume = 0.7f;
+
+		/// <summary>
+		/// Flag for whether or not the music needs to be restarted
+		/// </summary>
+		private bool _startSong;
+
+		/// <summary>
+		/// The background music
+		/// </summary>
+		private Song CurrentMusic { get; set; }
+
+		private Filename CurrentSongFile { get; set; }
+
+		/// <summary>
+		/// Stack of music cue names, for layered music playback.
+		/// </summary>
+		private Stack<Filename> _musicFileStack = new Stack<Filename>();
+
+		/// <summary>
+		/// Timer used to fade the music out
+		/// </summary>
+		private CountdownTimer FadeTimer { get; set; }
+
+		private float FadeTime { get; set; }
+
+		#endregion //Music
 
 		#endregion //Audio Data
 
@@ -48,7 +74,7 @@ namespace AudioBuddy
 		{
 			try
 			{
-				_content = game.Content;
+				_content = new ContentManager(game.Services, "Content");
 				_startSong = false;
 				CurrentMusic = null;
 				FadeTimer = new CountdownTimer();
@@ -73,10 +99,6 @@ namespace AudioBuddy
 			if (game != null)
 			{
 				game.Components.Add(audioManager);
-				if (null != audioManager)
-				{
-					audioManager.MusicManager = new ContentManager(game.Services, "Content");
-				}
 			}
 		}
 
@@ -103,37 +125,6 @@ namespace AudioBuddy
 		#endregion //Sound Effect Methods
 
 		#region Music
-
-		const float MaxVolume = 0.7f;
-
-		/// <summary>
-		/// Flag for whether or not the music needs to be restarted
-		/// </summary>
-		private bool _startSong;
-
-		/// <summary>
-		/// The background music
-		/// </summary>
-		private Song CurrentMusic { get; set; }
-
-		private Filename CurrentSongFile { get; set; }
-
-		/// <summary>
-		/// Separate content manager for loading music content.
-		/// </summary>
-		private ContentManager MusicManager { get; set; }
-
-		/// <summary>
-		/// Stack of music cue names, for layered music playback.
-		/// </summary>
-		private Stack<Filename> _musicFileStack = new Stack<Filename>();
-
-		/// <summary>
-		/// Timer used to fade the music out
-		/// </summary>
-		private CountdownTimer FadeTimer { get; set; }
-
-		private float FadeTime { get; set; }
 
 		/// <summary>
 		/// Get the name of the file currently being played
@@ -206,7 +197,7 @@ namespace AudioBuddy
 			FadeTimer.Stop();
 
 			//load the music
-			CurrentMusic = MusicManager.Load<Song>(musicFile.GetRelPathFileNoExt());
+			CurrentMusic = _content.Load<Song>(musicFile.GetRelPathFileNoExt());
 
 			_startSong = true;
 			MusicPlayer.IsRepeating = loop;
@@ -248,7 +239,6 @@ namespace AudioBuddy
 				MusicPlayer.Stop();
 				audioManager._startSong = false;
 				audioManager.CurrentMusic = null;
-				audioManager.MusicManager.Unload();
 				audioManager.CurrentSongFile = null;
 			}
 		}

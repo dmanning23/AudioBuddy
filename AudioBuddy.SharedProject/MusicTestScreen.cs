@@ -11,7 +11,7 @@ namespace AudioBuddy
 	/// <summary>
 	/// This is a screen where you can do a music test.
 	/// </summary>
-	public class MusicTestScreen : MenuScreen
+	public class MusicTestScreen : MenuStackScreen
 	{
 		#region Properties
 
@@ -59,8 +59,8 @@ namespace AudioBuddy
 			{
 				IsQuiet = true
 			};
-			PlayMenuEntry.Left += PrevPlayMusic;
-			PlayMenuEntry.Right += NextPlayMusic;
+			//PlayMenuEntry.Left += PrevPlayMusic;
+			//PlayMenuEntry.Right += NextPlayMusic;
 
 			PlayMenuEntry.OnClick += NextPlayMusic;
 			PlayMenuEntry.OnClick += PlayMusic;
@@ -71,8 +71,8 @@ namespace AudioBuddy
 			{
 				IsQuiet = true
 			};
-			PushMenuEntry.Left += PrevPushMusic;
-			PushMenuEntry.Right += NextPushMusic;
+			//PushMenuEntry.Left += PrevPushMusic;
+			//PushMenuEntry.Right += NextPushMusic;
 
 			PushMenuEntry.OnClick += NextPushMusic;
 			PushMenuEntry.OnClick += PushMusic;

@@ -13,7 +13,7 @@ namespace AudioBuddy
 	/// <summary>
 	/// This is a screen where you can do a music test.
 	/// </summary>
-	public class SoundTestScreen : MenuScreen
+	public class SoundTestScreen : MenuStackScreen
 	{
 		#region Properties
 
