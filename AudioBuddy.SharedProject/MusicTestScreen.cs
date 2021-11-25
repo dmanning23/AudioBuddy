@@ -1,10 +1,14 @@
 ﻿using FilenameBuddy;
 using InputHelper;
 using MenuBuddy;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
+using ResolutionBuddy;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using MusicPlayer = Microsoft.Xna.Framework.Media.MediaPlayer; //need this because of namespace clash on iOS
 
 namespace AudioBuddy
 {
@@ -34,6 +38,8 @@ namespace AudioBuddy
 		private MenuEntry PlayMenuEntry { get; set; }
 		private MenuEntry PushMenuEntry { get; set; }
 
+		Label volumeLabel;
+
 		#endregion //Properties
 
 		#region Methods
@@ -54,9 +60,12 @@ namespace AudioBuddy
 		{
 			await base.LoadContent();
 
+			SetTitleText();
+
 			//setup the music option
 			PlayMenuEntry = new MenuEntry(PlayText(), Content)
 			{
+				Scale = 0.5f,
 				IsQuiet = true
 			};
 			//PlayMenuEntry.Left += PrevPlayMusic;
@@ -69,6 +78,7 @@ namespace AudioBuddy
 
 			PushMenuEntry = new MenuEntry(PushText(), Content)
 			{
+				Scale = 0.5f,
 				IsQuiet = true
 			};
 			//PushMenuEntry.Left += PrevPushMusic;
@@ -81,19 +91,52 @@ namespace AudioBuddy
 
 			var popMusic = new MenuEntry("Pop Music", Content)
 			{
+				Scale = 0.5f,
 				IsQuiet = true
 			};
 			popMusic.OnClick += PopMusic;
 			AddMenuEntry(popMusic);
 
+			volumeLabel = new Label(MusicPlayer.Volume.ToString(), Content, FontSize.Small)
+			{
+				Position = new Point (Resolution.TitleSafeArea.Left, Resolution.TitleSafeArea.Top),
+				Horizontal = HorizontalAlignment.Left,
+				Vertical = VerticalAlignment.Top
+			};
+			AddItem(volumeLabel);
+
+			var volumeUp = new MenuEntry("Volume Up", Content)
+			{
+				Scale = 0.5f,
+				IsQuiet = true
+			};
+			volumeUp.OnClick += VolumeUp_OnClick;
+			AddMenuEntry(volumeUp);
+			var volumeDown = new MenuEntry("Volume Down", Content)
+			{
+				Scale = 0.5f,
+				IsQuiet = true
+			};
+			volumeDown.OnClick += VolumeDown_OnClick;
+			AddMenuEntry(volumeDown);
+
 			var backMenuEntry = new MenuEntry("Back", Content)
 			{
+				Scale = 0.5f,
 				IsQuiet = true
 			};
 			backMenuEntry.OnClick += Cancelled;
 			AddMenuEntry(backMenuEntry);
+		}
 
-			SetTitleText();
+		private void VolumeUp_OnClick(object sender, ClickEventArgs e)
+		{
+			AudioManager.ChangeMusicVolume(1f, 2f);
+		}
+
+		private void VolumeDown_OnClick(object sender, ClickEventArgs e)
+		{
+			AudioManager.ChangeMusicVolume(0.25f, 2f);
 		}
 
 		/// <summary>
@@ -138,6 +181,13 @@ namespace AudioBuddy
 		{
 			AudioManager.PopMusic();
 			SetTitleText();
+		}
+
+		public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+		{
+			base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+
+			volumeLabel.Text = MusicPlayer.Volume.ToString();
 		}
 
 		#region Play Music

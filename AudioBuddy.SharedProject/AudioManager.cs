@@ -56,6 +56,12 @@ namespace AudioBuddy
 
 		private float FadeTime { get; set; }
 
+		private CountdownTimer VolumeChangeTimer { get; set; }
+
+		private float VolumeChangeTarget { get; set; }
+
+		private float VolumeChangeDelta { get; set; }
+
 		#endregion //Music
 
 		#endregion //Audio Data
@@ -79,6 +85,8 @@ namespace AudioBuddy
 				CurrentMusic = null;
 				FadeTimer = new CountdownTimer();
 				FadeTimer.Stop();
+				VolumeChangeTimer = new CountdownTimer();
+				VolumeChangeTimer.Stop();
 			}
 			catch (NoAudioHardwareException)
 			{
@@ -235,7 +243,6 @@ namespace AudioBuddy
 			if (audioManager != null)
 			{
 				audioManager._musicFileStack.Clear();
-				var state = MusicPlayer.State;
 				MusicPlayer.Stop();
 				audioManager._startSong = false;
 				audioManager.CurrentMusic = null;
@@ -270,6 +277,26 @@ namespace AudioBuddy
 			}
 		}
 
+		public static void ChangeMusicVolume(float targetVolume, float changeTime)
+		{
+			if (audioManager != null)
+			{
+				//multiply the targetcolume by the maxvolume
+				audioManager.VolumeChangeTarget = targetVolume *= MaxVolume;
+
+				if (0f < changeTime)
+				{
+					//set the volume change delta per second
+					audioManager.VolumeChangeDelta = (MusicPlayer.Volume - targetVolume) / changeTime;
+					audioManager.VolumeChangeTimer.Start(changeTime);
+				}
+				else
+				{
+					MusicPlayer.Volume = targetVolume;
+				}
+			}
+		}
+
 		#endregion //Music
 
 		#region Updating Methods
@@ -283,6 +310,7 @@ namespace AudioBuddy
 			try
 			{
 				FadeTimer.Update(gameTime);
+				VolumeChangeTimer.Update(gameTime);
 
 				//restart the music?
 				if (_startSong)
@@ -292,6 +320,7 @@ namespace AudioBuddy
 					MusicPlayer.Play(CurrentMusic);
 				}
 
+				//fade out the music
 				if (!FadeTimer.Paused && FadeTimer.HasTimeRemaining)
 				{
 					MusicPlayer.Volume = MusicPlayer.Volume - (FadeTimer.TimeDelta * (1f / FadeTime));
@@ -300,6 +329,16 @@ namespace AudioBuddy
 				{
 					FadeTimer.Stop();
 					StopMusic();
+				}
+
+				if (!VolumeChangeTimer.Paused && VolumeChangeTimer.HasTimeRemaining)
+				{
+					MusicPlayer.Volume = Math.Max(0f, Math.Min(MusicPlayer.Volume - (VolumeChangeTimer.TimeDelta * VolumeChangeDelta), 1f));
+				}
+				else if (!VolumeChangeTimer.Paused && !VolumeChangeTimer.HasTimeRemaining)
+				{
+					VolumeChangeTimer.Stop();
+					MusicPlayer.Volume = audioManager.VolumeChangeTarget;
 				}
 
 				base.Update(gameTime);
