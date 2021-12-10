@@ -30,7 +30,7 @@ namespace AudioBuddy
 
 		#region Music
 
-		const float MaxVolume = 0.7f;
+		public float MaxMusicVolume { get; set; } = 0.7f;
 
 		/// <summary>
 		/// Flag for whether or not the music needs to be restarted
