@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackageId>AudioBuddy</PackageId>
+    <Version>5.0.0</Version>
+    <Title>AudioBuddy</Title>
+    <Authors>dmanning23</Authors>
+    <description>MonoGame library for audio management</description>
+    <PackageProjectUrl>https://github.com/dmanning23/AudioBuddy</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/dmanning23/AudioBuddy</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>monogame</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="MenuBuddy" Version="5.*" />
+  </ItemGroup>
+</Project>
